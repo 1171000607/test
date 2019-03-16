@@ -32,12 +32,14 @@ public class Filter {
         List<Tweet> ans = new ArrayList<Tweet> ();
         String now;
         n=tweets.size();
+        username=username.toLowerCase();
         if (n==0) {
             //throw new RuntimeException("not implemented");
             return ans;
         }
         for (i=0;i<n;i++) {
             now=tweets.get(i).getAuthor();
+            now=now.toLowerCase();
             if (now==username) ans.add(tweets.get(i));
         }
         return ans;
@@ -67,7 +69,7 @@ public class Filter {
         }
         for (i=0;i<n;i++) {
             now=tweets.get(i).getTimestamp();
-            if (now.isAfter(Start) && End.isAfter(now))
+            if (!Start.isAfter(now) && !now.isAfter(End))
                 ans.add(tweets.get(i));
         }
         return ans;
@@ -90,16 +92,23 @@ public class Filter {
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
         List<Tweet> ans = new ArrayList<Tweet> ();
-        int n,i,j,len;
+        int n,m,i,j,len;
         String now;
         String[] now_split=new String[] {};
         n=tweets.size();
-        if (n==0) {
+        m=words.size();
+        if (n==0 || m==0) {
             //throw new RuntimeException("not implemented");
             return ans;
         }
+        for (i=0;i<m;i++) {
+            now=words.get(i).toLowerCase();
+            words.set(i,now);
+        }
         for (i=0;i<n;i++) {
             now=tweets.get(i).getText();
+            now=now.toLowerCase();
+            now=now.replace("\"", "");
             now_split=now.split(" ");
             len=now_split.length;
             for (j=0;j<len;j++) {

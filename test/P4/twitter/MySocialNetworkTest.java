@@ -1,16 +1,19 @@
-/* Copyright (c) 2007-2016 MIT 6.005 course staff, all rights reserved.
- * Redistribution of original or derived work requires permission of course staff.
- */
 package P4.twitter;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class SocialNetworkTest {
+import org.junit.Test;
 
+public class MySocialNetworkTest {
     /*
      * TODO: your testing strategies for these methods should go here.
      * See the ic03-testing exercise for examples of what a testing strategy comment looks like.
@@ -24,14 +27,15 @@ public class SocialNetworkTest {
     private static final Instant d6 = Instant.parse("2016-02-18T14:28:00Z");
     private static final Instant d7 = Instant.parse("2016-02-17T05:37:42Z");
     
-    private static final Tweet tweet1 = new Tweet(1, "alyssa", "is it reasonable to talk about rivest so much?", d1);
-    private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #hype", d2);
+    private static final Tweet tweet1 = new Tweet(1, "cyberdusttv", "is it reasonable to talk about rivest so much?", d1);
+    private static final Tweet tweet2 = new Tweet(2, "bbitdiddle", "rivest talk in 30 minutes #bitcoin price", d2);
     private static final Tweet tweet3 = new Tweet(3, "jeanOrlando5", "RT @RealJamesWoods: The feminists got what they asked for, and what they deserved. All future \\u201cwomen\\u2019s\\u201d Olympics events will be tarnished w\\u2026?", d3);
     private static final Tweet tweet4 = new Tweet(4, "exit___strategy", "RT @swiftcashcc: Geographical locations of SwiftNodes! Current ROI for running a SwiftNode is more than 100% per annum! Each SwiftNode requ\\u2026", d6);
-    private static final Tweet tweet5 = new Tweet(5, "sfoxtrading", "$56.5 arb between bittrex and coinbase #bitcoin #bitcoinprice", d4);
+    private static final Tweet tweet5 = new Tweet(5, "Glockehara", "$56.5 arb between bittrex and coinbase #bitcoin #bitcoinprice", d4);
     private static final Tweet tweet6 = new Tweet(6, "DerWinky", "https://t.co/Wyqq9LyYwC\\n\\nMario Party mit @cyberdusttv @Glockehara @Lukbertbert", d5);
     private static final Tweet tweet7 = new Tweet(7, "alyssa", "is it reasonable to talk about rivest so much?", d7);
-    
+    private static final Tweet tweet8 = new Tweet(8, "Calzinirossi23","RT @lesbianoutsider: Yes, Ladies, go see #CaptainMarvel #bitcoin. Women can be Super Heroes too. But don't forget, Biological Males can be Faux Fema\u2026", d3);
+    private static final Tweet tweet9 = new Tweet(9, "lesbianoutsider","Yes, Ladies, go see #CaptainMarvel. Women can be Super Heroes too. But don't forget, Biological Males can be Faux F\\u2026 https://t.co/mLi5bZzgGc",d6);
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
         assert false; // make sure assertions are enabled with VM argument: -ea
@@ -39,60 +43,52 @@ public class SocialNetworkTest {
     
     @Test
     public void testGuessFollowsGraphEmpty() {
-        Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet1,tweet2,tweet3,tweet4,tweet5,tweet6,tweet7));
+        Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet1,tweet2,tweet3,tweet4,tweet5,tweet6,tweet7,tweet8,tweet9));
         Map<String, Set<String>> Test = new HashMap<> ();
         
         Set<String> next = new HashSet<> ();
         next.add("realjameswoods");
-        Test.put(tweet3.getAuthor().toLowerCase(),next);
+        Test.put("jeanorlando5",next);
         //System.out.println(Test);
         
         next = new HashSet<> ();
         next.add("swiftcashcc");
-        Test.put(tweet4.getAuthor().toLowerCase(),next);
+        Test.put("exit___strategy",next);
         //System.out.println(Test);
         
         next = new HashSet<> ();
         next.add("cyberdusttv");
         next.add("glockehara");
         next.add("lukbertbert");
-        Test.put(tweet6.getAuthor().toLowerCase(),next);
+        Test.put("derwinky",next);
         //System.out.println(Test);
         
-        assertFalse("expected empty graph", followsGraph.isEmpty());
+        next = new HashSet<> ();
+        next.add("lesbianoutsider");
+        Test.put("calzinirossi23",next);
+        
         assertEquals(followsGraph,Test);
         
     }
     
     @Test
-    public void testInfluencersEmpty() {
-        Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet1,tweet2,tweet3,tweet4,tweet5,tweet6,tweet7));
+    public void testMySocialNetwork() {
+        Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet1,tweet2,tweet3,tweet4,tweet5,tweet6,tweet7,tweet8,tweet9));
         List<String> Test = new ArrayList<> ();
-        List<String> influencers = SocialNetwork.influencers(followsGraph);
+        List<String> influencers = SocialNetwork.MySocialNetwork(followsGraph);
         
-        Test.add("cyberdusttv");
+        Test.add("calzinirossi23");
         Test.add("glockehara");
+        Test.add("bbitdiddle");
+        Test.add("cyberdusttv");
+        Test.add("lesbianoutsider");
         Test.add("lukbertbert");
         Test.add("realjameswoods");
         Test.add("swiftcashcc");
         
         assertEquals(Test,influencers);
-        assertFalse("expected empty list", influencers.isEmpty());
+        assertEquals(8, influencers.size());
         
     }
-
-    /*
-     * Warning: all the tests you write here must be runnable against any
-     * SocialNetwork class that follows the spec. It will be run against several
-     * staff implementations of SocialNetwork, which will be done by overwriting
-     * (temporarily) your version of SocialNetwork with the staff's version.
-     * DO NOT strengthen the spec of SocialNetwork or its methods.
-     * 
-     * In particular, your test cases must not call helper methods of your own
-     * that you have put in SocialNetwork, because that means you're testing a
-     * stronger spec than SocialNetwork says. If you need such helper methods,
-     * define them in a different class. If you only need them in this test
-     * class, then keep them in this test class.
-     */
-
+    
 }

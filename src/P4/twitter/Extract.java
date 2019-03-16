@@ -88,6 +88,7 @@ public class Extract {
                         c=now.charAt(j);
                         while (j<len && ((c>='0' && c<='9') || (c>='a' && c<='z') || (c>='A' && c<='Z') || (c=='-') || (c=='_'))) {
                             j++;
+                            if (j<len) c=now.charAt(j);
                         }
                         s=now.substring(k,j);
                         ans.add(s);

@@ -4,30 +4,69 @@ import java.io.*;
 import java.util.*;
 
 public class MagicSquare {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         // TODO Auto-generated method stub
         boolean judge;
         Scanner input = new Scanner(System.in);
         int n = input.nextInt();
         
-        judge=isLegalMagicSquare(".\\src\\P1\\1.txt");
-        System.out.println(judge);
-        judge=isLegalMagicSquare(".\\src\\P1\\2.txt");
-        System.out.println(judge);
-        judge=isLegalMagicSquare(".\\src\\P1\\3.txt");
-        System.out.println(judge);
-        judge=isLegalMagicSquare(".\\src\\P1\\4.txt");
-        System.out.println(judge);
-        judge=isLegalMagicSquare(".\\src\\P1\\5.txt");
-        System.out.println(judge);
+        try{
+            judge=isLegalMagicSquare(".\\src\\P1\\1.txt");
+            System.out.println(judge);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            System.out.println(false);
+        }
         
-        judge=generateMagicSquare(n);
-        if (judge) judge=isLegalMagicSquare(".\\src\\P1\\6.txt");
-        System.out.println(judge);
+        try {
+            judge=isLegalMagicSquare(".\\src\\P1\\2.txt");
+            System.out.println(judge);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            System.out.println(false);
+        }
+        
+        try {
+            judge=isLegalMagicSquare(".\\src\\P1\\3.txt");
+            System.out.println(judge);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            System.out.println(false);
+        }
+        
+        try {
+            judge=isLegalMagicSquare(".\\src\\P1\\4.txt");
+            System.out.println(judge);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            System.out.println(false);
+        }
+        
+        try {
+            judge=isLegalMagicSquare(".\\src\\P1\\5.txt");
+            System.out.println(judge);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            System.out.println(false);
+        }
+        
+        try{
+            judge=generateMagicSquare(n);
+            judge=isLegalMagicSquare(".\\src\\P1\\6.txt");
+            System.out.println(judge);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         
         input.close();
     }
-    public static boolean isLegalMagicSquare(String pathname) {
+    public static boolean isLegalMagicSquare(String pathname) throws Exception{
         int N=0;
         int n=0;
         String[] s=new String[] {};
@@ -44,20 +83,33 @@ public class MagicSquare {
             while ((line=br.readLine()) != null) {
                 s=line.split("\t");
                 if (N==0) n=s.length;
-                if (s.length!=n) return false;
                 for (int i=0;i<s.length;i++) {
-                    for (int j=0;j<s[i].length();j++) 
-                        if (s[i].charAt(j)==' ' || s[i].charAt(j)=='.') return false;
+                    for (int j=0;j<s[i].length();j++) {
+                        if (s[i].charAt(j)==' ') {
+                            throw new Exception("Separator Error!");
+                        }
+                        if (s[i].charAt(j)=='.') {
+                            throw new Exception("Error: Decimal!");
+                        }
+                    }
                     num[N][i]=Integer.valueOf(s[i]);
-                    if (num[N][i]<0) return false;
+                    if (num[N][i]<0) {
+                        throw new Exception("Error: Negatuve Number!");
+                    }
+                }
+                if (s.length!=n) {
+                    throw new Exception("Not a Matrix!");
                 }
                 N=N+1;
             }
             br.close();
         }catch(IOException e) {
             e.printStackTrace();
+            return false;
         }
-        if (N!=n) return false;
+        if (N!=n) {
+            throw new Exception("Not a Matrix!");
+        }
         for (int i=0;i<N;i++) {
             for (int j=0;j<N;j++) {
                 sum1[i]+=num[i][j];
@@ -66,25 +118,35 @@ public class MagicSquare {
                 if (i+j==N-1) sum4+=num[i][j];
             }
         }
-        if (sum3!=sum4) return false;
+        if (sum3!=sum4) {
+            throw new Exception("Numerical Error!");
+        }
         for (int i=0;i<N;i++) {
-            if (sum1[i]!=sum3) return false;
-            if (sum2[i]!=sum3) return false;
+            if (sum1[i]!=sum3 || sum2[i]!=sum3) {
+                throw new Exception("Numerical Error!");
+            }
         }
         return true;
     }
     
-    public static boolean generateMagicSquare(int n) {
-        if (n % 2 == 0) return false;
+    public static boolean generateMagicSquare(int n) throws Exception{
+        
+        //判断输入是否符合要求
+        if (n % 2 == 0) {
+            throw new Exception("Please enter an odd number!");
+        }
+        
+        
+        //构造幻方
         int magic[][] = new int[n][n];
         int row = 0, col = n / 2, i, j, square = n * n;
         for (i = 1; i <= square; i++) {
             magic[row][col] = i;
-            if (i % n == 0) row++;
+            if (i % n == 0) row++;   //若已填入数字，向下移动一行继续填写
             else {
-                if (row == 0) row = n - 1;
+                if (row == 0) row = n - 1;   //若行超出，则循环
                 else row--;
-                if (col == (n - 1)) col = 0;
+                if (col == (n - 1)) col = 0;   //若列超出，则循环
                 else col++;
             }
         }

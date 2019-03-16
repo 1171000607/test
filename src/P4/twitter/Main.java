@@ -39,10 +39,10 @@ public class Main {
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
-        try {
+        /*try {
             assert false;
             throw new Error("Always run main and tests with assertions enabled");
-        } catch (AssertionError ae) { }
+        } catch (AssertionError ae) { }*/
         
         final List<Tweet> tweets;
         try {

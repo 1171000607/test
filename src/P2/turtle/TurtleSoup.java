@@ -189,13 +189,12 @@ public class TurtleSoup {
      * @return minimal subset of the input points that form the vertices of the perimeter of the convex hull
      */
     public static Set<Point> convexHull(Set<Point> points) {
-        Set<Point> ans = new HashSet<Point> ();
+        Set<Point> ans = new HashSet<Point>() {};
         Point now,now1,now2;
-        
         int num1,num2;
         double x,y,x1,y1,x2,y2,tmp,dis1,dis2;
         Iterator<Point> p = points.iterator();
-        if (points.size()<4) {
+        if (points.size()<3) {
             return points;
         }
         Point Beg = new Point(1,1);
